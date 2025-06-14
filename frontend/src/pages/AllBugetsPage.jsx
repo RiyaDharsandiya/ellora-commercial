@@ -39,7 +39,6 @@ export default function AllBudgetsPage() {
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
     let allEntries = [];
-    let unsettledEntries = [];
 
     budgets.forEach(budget => {
       if (budget.propertyBudgets && budget.propertyBudgets.length > 0) {
@@ -56,25 +55,13 @@ export default function AllBudgetsPage() {
               ...entry,
               budgetName: budget.name,
               budgetId: budget._id,
-              isUnsettled: false,
             });
-          } else if (
-            entryDate.getMonth() < month &&
-            entryDate.getFullYear() <= year &&
-            remaining !== 0
-          ) {
-            unsettledEntries.push({
-              ...entry,
-              budgetName: budget.name,
-              budgetId: budget._id,
-              isUnsettled: true,
-            });
-          }
+          } 
         });
       }
     });
 
-    return [...allEntries, ...unsettledEntries];
+    return [...allEntries];
   };
 
   const monthlyEntries = getMonthlyEntries();
@@ -246,7 +233,6 @@ export default function AllBudgetsPage() {
         'Office Misc': officeMisc.toFixed(2),
         'Total Expense': totalExpense.toFixed(2),
         'Remaining': remaining.toFixed(2),
-        'Status': entry.isUnsettled ? 'Unsettled' : 'Settled'
       };
     });
 
@@ -259,7 +245,6 @@ export default function AllBudgetsPage() {
     'Office Misc': totalOfficeMiscExpense.toFixed(2),
     'Total Expense': totalExpense.toFixed(2),
     'Remaining': totalRemaining.toFixed(2),
-    'Status': '',
   };
 
   dataToExport.push(totalsRow);
@@ -363,9 +348,7 @@ export default function AllBudgetsPage() {
                   className={`p-3 border-b border-gray-100 text-right ${
                     remaining < 0
                       ? "text-red-500 font-semibold"
-                      : remaining === 0
-                      ? "text-green-500 font-semibold"
-                      : "text-gray-700 font-semibold"
+                      : "text-green-500 font-semibold"
                   }`}
                 >
                   {remaining.toFixed(2)}
@@ -405,9 +388,8 @@ export default function AllBudgetsPage() {
               className={`p-3 font-semibold border-t text-right ${
                   totalRemaining < 0
                   ? "text-red-500"
-                  : totalRemaining === 0
-                  ? "text-green-500"
-                  : "text-black"
+                  :  "text-green-500"
+                  
               }`}
               >
               {totalRemaining.toFixed(2)}

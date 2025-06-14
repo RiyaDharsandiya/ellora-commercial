@@ -44,9 +44,8 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
                     <td className={`p-3 whitespace-nowrap ${
                       remaining < 0
                         ? "text-red-500"
-                        : remaining === 0
-                        ? "text-green-500"
-                        : "text-gray-500"
+                        : "text-green-500"
+
                     }`}>{remaining}</td>
                     <td className="p-3 whitespace-nowrap">
                       <button
@@ -74,9 +73,8 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
                     <td className={`p-3 whitespace-nowrap ${
                       remaining < 0
                         ? "text-red-500"
-                        : remaining === 0
-                        ? "text-green-500"
-                        : "text-gray-500"
+                        :  "text-green-500"
+                        
                     }`}>{remaining}</td>
                     <td className="p-3 whitespace-nowrap"></td>
                   </tr>
@@ -154,9 +152,8 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
                     <td className={`p-3 whitespace-nowrap ${
                       blockBalance < 0
                         ? "text-red-500"
-                        : blockBalance === 0
-                        ? "text-green-500"
-                        : "text-black"
+                        :  "text-green-500"
+
                     }`}>{showRemaining ? blockBalance : ''}</td>
                     <td className="p-3 whitespace-nowrap">
                       <button
@@ -191,9 +188,7 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
                 <td className={`p-3 whitespace-nowrap ${
                   sumOfRemaining < 0
                     ? "text-red-500"
-                    : sumOfRemaining === 0
-                    ? "text-green-500"
-                    : "text-black"
+                    : "text-green-500"
                 }`}>{sumOfRemaining}</td>
                 <td className="p-3 whitespace-nowrap"></td>
               </tr>

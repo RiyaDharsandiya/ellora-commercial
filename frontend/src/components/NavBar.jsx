@@ -38,7 +38,7 @@ function Navbar() {
           alt="Ellora Commercial Logo"
           className="h-8 w-auto rounded-2xl mr-2" // Added margin-right
         />
-          <Link to="/">
+          <Link to="/budget">
             <div className="flex-shrink-0 text-white font-bold text-xl tracking-wide">
               Ellora Commercial
             </div>

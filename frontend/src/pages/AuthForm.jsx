@@ -69,7 +69,7 @@ const AuthForm = ({ isSignup, setIsSignup }) => {
     try {
       let res;
       if (isSignup) {
-        res = await axios.post(`${API_URL}/api/suers/signup`, form);
+        res = await axios.post(`${API_URL}/api/users/signup`, form);
       } else {
         res = await axios.post(`${API_URL}/api/users/login`, { email: form.email, password: form.password });
       }

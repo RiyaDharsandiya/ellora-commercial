@@ -1,0 +1,34 @@
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables
+.env
+.env.*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# VSCode settings
+.vscode/
+
+# Optional lock files (choose one lock strategy)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output (for frontend Vite)
+dist/
+
+
+# Coverage reports (if you add tests)
+coverage/
+
+# Optional IDE folders
+.idea/
+*.iml

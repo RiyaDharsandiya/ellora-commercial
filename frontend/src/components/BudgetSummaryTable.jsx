@@ -47,6 +47,7 @@ function BudgetSummaryTable({monthlyData}) {
             <th className="border-b p-2 text-left">Month</th>
             <th className="border-b p-2 text-right">Misc Expenses</th>
             <th className="border-b p-2 text-right">Remaining</th>
+            <th className="border-b p-2 text-right">Difference</th>
           </tr>
         </thead>
         <tbody>
@@ -59,12 +60,18 @@ function BudgetSummaryTable({monthlyData}) {
               <td className="border-b p-2 text-right">
                 ₹{month.remaining.toFixed(2)}
               </td>
+              <td className="border-b p-2 text-right">
+              ₹{(month.remaining - month.miscExp).toFixed(2)}
+            </td>
             </tr>
           ))}
           <tr>
             <td className="font-bold p-2">Total</td>
             <td className="font-bold p-2 text-right">₹{totalMiscExp.toFixed(2)}</td>
             <td className="font-bold p-2 text-right">₹{totalRemaining.toFixed(2)}</td>
+            <td className="font-bold p-2 text-right">
+              ₹{( totalRemaining-totalMiscExp ).toFixed(2)}
+            </td>
           </tr>
           {/* Optional: Difference Row */}
           <tr>

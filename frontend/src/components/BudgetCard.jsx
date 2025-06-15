@@ -11,15 +11,29 @@ const BudgetCard = ({
 }) => {
   if (!budget) return null;
 
-  const totalExp = typeof budget.totalExp === "number"
-    ? budget.totalExp
-    : Number(budget.spent) || 0;
-  const remaining = typeof budget.remaining === "number"
-    ? budget.remaining
-    : (Number(budget.amount) || 0) - totalExp;
-  const progress = Number(budget.totalAmount)
-    ? Math.min((totalExp / Number(budget.totalAmount)) * 100, 100)
+   const totalAmount = budget.propertyBudgets?.reduce(
+    (sum, entry) => sum + (Number(entry.amount) || 0),
+    0
+  );
+  const totalExp = budget.propertyBudgets?.reduce(
+    (sum, entry) =>
+      sum +
+      (Number(entry.stamp) || 0) +
+      (Number(entry.registrationFee) || 0) +
+      (Number(entry.officeMiscExpense) || 0),
+    0
+  );
+  const remaining = totalAmount - totalExp;
+
+  // Use backend values if they exist, otherwise use calculated values
+  const displayTotalExp = typeof budget.totalExp === "number" ? budget.totalExp : totalExp;
+  const displayTotalAmount = typeof budget.totalAmount === "number" ? budget.totalAmount : totalAmount;
+  const displayRemaining = typeof budget.remaining === "number" ? budget.remaining : remaining;
+
+  const progress = displayTotalAmount
+    ? Math.min((displayTotalExp / displayTotalAmount) * 100, 100)
     : 0;
+
 
   return (
     <div className="border rounded-lg p-4 shadow">
@@ -27,7 +41,7 @@ const BudgetCard = ({
         <span className="text-2xl">💸</span>
         <h2 className="ml-2 text-lg font-bold">{budget.name?.toUpperCase()}</h2>
       </div>
-      <div className="text-sm mt-2">Rs {totalExp} spent</div>
+      <div className="text-sm mt-2">Rs {displayTotalExp} spent</div>
       <div className="bg-gray-200 h-2 rounded mt-1 mb-2">
         <div
           className="bg-black h-2 rounded"
@@ -43,7 +57,7 @@ const BudgetCard = ({
               : "text-gray-500"
           }`}
         >
-          Rs {remaining.toFixed(2)} remaining
+          Rs {displayRemaining.toFixed(2)} remaining
         </div>
 
 

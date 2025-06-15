@@ -118,15 +118,13 @@ export const addPropertyBudget = async (req, res) => {
       amount: Number(amount),
       date: new Date(date),
     });
-
-    await budget.save();
-    return res.status(201).json(budget);
+    recalculateBudgetTotals(budget);
+      await budget.save();
+      return res.status(201).json(budget);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
-
 
 // Delete a propertyBudget entry by entry._id
 export const deletePropertyBudgetEntry = async (req, res) => {
@@ -143,10 +141,7 @@ export const deletePropertyBudgetEntry = async (req, res) => {
     budget.propertyBudgets = budget.propertyBudgets.filter(
       (entry) => String(entry._id) !== entryId
     );
-
-    // Recalculate totals
     recalculateBudgetTotals(budget);
-
     await budget.save();
     res.json(budget);
   } catch (err) {
@@ -175,9 +170,7 @@ export const updatePropertyBudgetEntry = async (req, res) => {
     entry.officeMiscExpense = officeMiscExpense;
     if (amount !== undefined) entry.amount = amount;
 
-    // Recalculate totals
     recalculateBudgetTotals(budget);
-
     await budget.save();
     res.json(budget);
   } catch (err) {

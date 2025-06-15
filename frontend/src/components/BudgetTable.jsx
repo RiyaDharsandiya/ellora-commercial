@@ -21,6 +21,7 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
         </thead>
         <tbody>
           {budgets.map((b, budgetIdx) => {
+            // Case: no propertyBudgets
             if (!b.propertyBudgets || b.propertyBudgets.length === 0) {
               const totalExp =
                 (Number(b.stamp) || 0) +
@@ -42,47 +43,18 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
                     <td className="p-3 whitespace-nowrap">{b.officeMiscExpense || ''}</td>
                     <td className="p-3 whitespace-nowrap">{totalExp}</td>
                     <td className={`p-3 whitespace-nowrap ${
-                      remaining < 0
-                        ? "text-red-500"
-                        : "text-green-500"
-
+                      remaining < 0 ? "text-red-500" : "text-green-500"
                     }`}>{remaining}</td>
                     <td className="p-3 whitespace-nowrap">
-                      <button
-                        className="text-blue-600 hover:underline mr-2"
-                        onClick={() => onEditEntry(b, null, 0)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="text-red-600 hover:underline"
-                        onClick={() => onDeleteEntry(b, null, 0)}
-                      >
-                        Delete
-                      </button>
+                      <button className="text-blue-600 hover:underline mr-2" onClick={() => onEditEntry(b, null, 0)}>Edit</button>
+                      <button className="text-red-600 hover:underline" onClick={() => onDeleteEntry(b, null, 0)}>Delete</button>
                     </td>
-                  </tr>
-                  {/* Totals row for single entry */}
-                  <tr className="font-bold bg-purple-100">
-                    <td className="p-3 whitespace-nowrap" colSpan={3}>Total</td>
-                    <td className="p-3 whitespace-nowrap">0</td>
-                    <td className="p-3 whitespace-nowrap">{b.stamp || 0}</td>
-                    <td className="p-3 whitespace-nowrap">{b.registrationFee || 0}</td>
-                    <td className="p-3 whitespace-nowrap">{b.officeMiscExpense || 0}</td>
-                    <td className="p-3 whitespace-nowrap">{totalExp}</td>
-                    <td className={`p-3 whitespace-nowrap ${
-                      remaining < 0
-                        ? "text-red-500"
-                        :  "text-green-500"
-                        
-                    }`}>{remaining}</td>
-                    <td className="p-3 whitespace-nowrap"></td>
                   </tr>
                 </React.Fragment>
               );
             }
 
-            // Group propertyBudgets into blocks (each block starts with a deposit)
+            // Grouping logic
             const blocks = [];
             let currentBlock = [];
             b.propertyBudgets.forEach((entry, idx) => {
@@ -98,85 +70,58 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
               }
             });
 
-            // Totals for the entire budget
+            // Totals
             let totalAmount = 0;
             let totalStamp = 0;
             let totalRegi = 0;
             let totalMisc = 0;
             let totalExp = 0;
-            let sumOfRemaining = 0;
+            let totalRemaining = 0;
 
-            // Render blocks
             const rows = [];
+
             blocks.forEach((block, blockIdx) => {
-              let blockDeposit = 0;
-              let blockBalance = 0;
-              let blockRows = [];
-
-              if (block[0].amount && Number(block[0].amount) > 0) {
-                blockDeposit = Number(block[0].amount);
-                totalAmount += blockDeposit;
-                blockBalance = blockDeposit;
-              }
-
               block.forEach((entry, i) => {
                 const stamp = Number(entry.stamp) || 0;
                 const registrationFee = Number(entry.registrationFee) || 0;
                 const officeMiscExpense = Number(entry.officeMiscExpense) || 0;
                 const rowTotalExp = stamp + registrationFee + officeMiscExpense;
-                blockBalance -= rowTotalExp;
+                const amount = Number(entry.amount) || 0;
+                const rowRemaining = amount - rowTotalExp;
 
-                // Add to totals
+                // Totals
+                totalAmount += amount;
                 totalStamp += stamp;
                 totalRegi += registrationFee;
                 totalMisc += officeMiscExpense;
                 totalExp += rowTotalExp;
+                totalRemaining += rowRemaining;
 
                 const date = entry.date
                   ? new Date(entry.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })
                   : '';
-                const showRemaining = (i === block.length - 1);
-                if (showRemaining) sumOfRemaining += blockBalance;
 
-                blockRows.push(
-                  <tr key={entry._id || entry.idx}
-                    className={`border-t ${blockIdx % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+                rows.push(
+                  <tr key={entry._id || entry.idx} className={`border-t ${blockIdx % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
                     <td className="p-3 whitespace-nowrap">{date}</td>
                     <td className="p-3 whitespace-nowrap">{b.name}</td>
                     <td className="p-3 whitespace-nowrap">{entry.propertyDetails}</td>
-                    <td className="p-3 whitespace-nowrap">{entry.amount ? entry.amount : ''}</td>
+                    <td className="p-3 whitespace-nowrap">{amount || ''}</td>
                     <td className="p-3 whitespace-nowrap">{stamp}</td>
                     <td className="p-3 whitespace-nowrap">{registrationFee}</td>
                     <td className="p-3 whitespace-nowrap">{officeMiscExpense}</td>
                     <td className="p-3 whitespace-nowrap">{rowTotalExp}</td>
-                    <td className={`p-3 whitespace-nowrap ${
-                      blockBalance < 0
-                        ? "text-red-500"
-                        :  "text-green-500"
-
-                    }`}>{showRemaining ? blockBalance : ''}</td>
+                    <td className={`p-3 whitespace-nowrap ${rowRemaining < 0 ? "text-red-500" : "text-green-500"}`}>{rowRemaining}</td>
                     <td className="p-3 whitespace-nowrap">
-                      <button
-                        className="text-blue-600 hover:underline mr-2"
-                        onClick={() => onEditEntry(b, entry, entry.idx)}
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className="text-red-600 hover:underline"
-                        onClick={() => onDeleteEntry(b, entry, entry.idx)}
-                      >
-                       <FaTrash />
-                      </button>
+                      <button className="text-blue-600 hover:underline mr-2" onClick={() => onEditEntry(b, entry, entry.idx)}><FaEdit /></button>
+                      <button className="text-red-600 hover:underline" onClick={() => onDeleteEntry(b, entry, entry.idx)}><FaTrash /></button>
                     </td>
                   </tr>
                 );
               });
-
-              rows.push(...blockRows);
             });
 
-            // Totals row
+            // Column totals
             rows.push(
               <tr key="totals" className="font-bold bg-purple-100">
                 <td className="p-3 whitespace-nowrap" colSpan={3}>Total</td>
@@ -185,14 +130,11 @@ const BudgetTable = ({ budgets, onEditEntry, onDeleteEntry }) => {
                 <td className="p-3 whitespace-nowrap">{totalRegi}</td>
                 <td className="p-3 whitespace-nowrap">{totalMisc}</td>
                 <td className="p-3 whitespace-nowrap">{totalExp}</td>
-                <td className={`p-3 whitespace-nowrap ${
-                  sumOfRemaining < 0
-                    ? "text-red-500"
-                    : "text-green-500"
-                }`}>{sumOfRemaining}</td>
+                <td className={`p-3 whitespace-nowrap ${totalRemaining < 0 ? "text-red-500" : "text-green-500"}`}>{totalRemaining}</td>
                 <td className="p-3 whitespace-nowrap"></td>
               </tr>
             );
+
             return rows;
           })}
         </tbody>

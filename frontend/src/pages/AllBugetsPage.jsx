@@ -302,8 +302,8 @@ export default function AllBudgetsPage() {
         <table className="w-full border-collapse">
           <thead className="bg-gray-50">
             <tr>
-              <th className="p-3 text-left text-sm font-semibold text-gray-700 border-b">Party Name</th>
               <th className="p-3 text-left text-sm font-semibold text-gray-700 border-b">Date</th>
+              <th className="p-3 text-left text-sm font-semibold text-gray-700 border-b">Party Name</th>
               <th className="p-3 text-right text-sm font-semibold text-gray-700 border-b">Amount</th>
               <th className="p-3 text-right text-sm font-semibold text-gray-700 border-b">Stamp</th>
               <th className="p-3 text-right text-sm font-semibold text-gray-700 border-b">Registration Fee</th>
@@ -330,15 +330,10 @@ export default function AllBudgetsPage() {
                 key={index}
                 className={`${bgColor} hover:bg-gray-100`}
               >
-                <td className="p-3 border-b border-gray-100">{entry.budgetName}</td>
                 <td className="p-3 border-b border-gray-100">
                   {new Date(entry.date).toLocaleDateString()}
-                  {entry.isUnsettled && (
-                    <span className="ml-2 text-xs text-red-600">
-                      (Unsettled from previous month)
-                    </span>
-                  )}
                 </td>
+                <td className="p-3 border-b border-gray-100">{entry.budgetName}</td>
                 <td className="p-3 border-b border-gray-100 text-right">{Number(entry.amount).toFixed(2)}</td>
                 <td className="p-3 border-b border-gray-100 text-right">{stamp.toFixed(2)}</td>
                 <td className="p-3 border-b border-gray-100 text-right">{registrationFee.toFixed(2)}</td>
